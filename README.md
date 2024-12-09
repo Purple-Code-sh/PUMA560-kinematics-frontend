@@ -20,13 +20,17 @@ This project is a web-based application that demonstrates the functionality of a
    ```bash
    git clone https://github.com/yourusername/your-repo-name.git
    ```
-2. Install dependencies:
+2. Navigate to the project folder:
+   ```bash
+   cd your-repo-name
+   ```
+3. Install dependencies:
    ```bash
    npm install
    ```
-3. Start the development server:
+4. Start the development server:
    ```bash
-   npm start
+   npm run dev
    ```
 
 ---
@@ -44,7 +48,7 @@ This project is a web-based application that demonstrates the functionality of a
 
 ## Usage
 
-1. Launch the frontend using `npm start`.
+1. Launch the frontend using `npm run dev`.
 2. Input desired target coordinates and configure the arm.
 3. Press "Calculate Inverse" and observe the results in the 3D scene.
 
