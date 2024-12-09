@@ -22,6 +22,7 @@ const WebSocketClient: React.FC = () => {
   const [Z, setZ] = useState<string>("20.23");
   const [arm, setArm] = useState<number>(1); // +1 por defecto (brazo derecho)
   const [elbow, setElbow] = useState<number>(1); // +1 por defecto (codo arriba)
+  const [step, setStep] = useState<number>(0.01); // Tamaño de paso inicial
 
   const [theta1, setTheta1] = useState<number | null>(null);
   const [theta2, setTheta2] = useState<number | null>(null);
@@ -102,7 +103,7 @@ const WebSocketClient: React.FC = () => {
   // Rango e incrementos para etiquetas numéricas
   const minVal = -950.0;
   const maxVal = 950.0;
-  const step = 100;
+  const stepGrid = 100;
 
   return (
     <div style={{ fontFamily: 'sans-serif' }}>
@@ -114,7 +115,7 @@ const WebSocketClient: React.FC = () => {
               X:
               <input
                 type="number"
-                step="0.01"
+                step={step}
                 value={X}
                 onChange={e => setX(e.target.value)}
                 style={{ marginLeft: '10px', width: '100px' }}
@@ -126,7 +127,7 @@ const WebSocketClient: React.FC = () => {
               Y:
               <input
                 type="number"
-                step="0.01"
+                step={step}
                 value={Y}
                 onChange={e => setY(e.target.value)}
                 style={{ marginLeft: '22px', width: '100px' }}
@@ -138,11 +139,27 @@ const WebSocketClient: React.FC = () => {
               Z:
               <input
                 type="number"
-                step="0.01"
+                step={step}
                 value={Z}
                 onChange={e => setZ(e.target.value)}
                 style={{ marginLeft: '22px', width: '100px' }}
               />
+            </label>
+          </div>
+          <div style={{ marginBottom: '10px' }}>
+            <label>
+              Tamaño de paso:
+              <select
+                value={step}
+                onChange={(e) => setStep(parseFloat(e.target.value))}
+                style={{ marginLeft: '10px', width: '120px' }}
+              >
+                <option value={0.01}>0.01</option>
+                <option value={0.1}>0.1</option>
+                <option value={1}>1</option>
+                <option value={10}>10</option>
+                <option value={50}>50</option>
+              </select>
             </label>
           </div>
           <div style={{ marginBottom: '10px' }}>
@@ -226,8 +243,8 @@ const WebSocketClient: React.FC = () => {
             <Line points={[[xNum,yNum,0],[xNum,yNum,zNum]]} color="#555" lineWidth={1} />
 
             {/* Etiquetas numéricas en X */}
-            {Array.from({length: Math.floor((maxVal - minVal)/step)+1}, (_, idx) => {
-              const val = minVal + idx*step;
+            {Array.from({length: Math.floor((maxVal - minVal)/stepGrid)+1}, (_, idx) => {
+              const val = minVal + idx*stepGrid;
               return (
                 <Text 
                   key={`x-label-${val}`} 
@@ -241,8 +258,8 @@ const WebSocketClient: React.FC = () => {
             })}
 
             {/* Etiquetas numéricas en Y */}
-            {Array.from({length: Math.floor((maxVal - minVal)/step)+1}, (_, idx) => {
-              const val = minVal + idx*step;
+            {Array.from({length: Math.floor((maxVal - minVal)/stepGrid)+1}, (_, idx) => {
+              const val = minVal + idx*stepGrid;
               return (
                 <Text 
                   key={`y-label-${val}`} 
@@ -256,8 +273,8 @@ const WebSocketClient: React.FC = () => {
             })}
 
             {/* Etiquetas numéricas en Z */}
-            {Array.from({length: Math.floor((maxVal - minVal)/step)+1}, (_, idx) => {
-              const val = minVal + idx*step;
+            {Array.from({length: Math.floor((maxVal - minVal)/stepGrid)+1}, (_, idx) => {
+              const val = minVal + idx*stepGrid;
               return (
                 <Text 
                   key={`z-label-${val}`} 
