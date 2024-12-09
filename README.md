@@ -1,20 +1,3 @@
-Lo ideal es incluir esta explicación en el **README.md** de tu proyecto. El README es el documento principal que los usuarios ven cuando visitan tu repositorio en GitHub, y sirve para proporcionar una descripción completa de tu proyecto.
-
-### Organización sugerida para el README:
-1. **Título del Proyecto**: Un título llamativo y descriptivo.
-2. **Breve Descripción**: Resumen del propósito del proyecto (puedes usar parte del texto de "Project Overview").
-3. **Instalación y Configuración**: Instrucciones sobre cómo configurar y ejecutar el proyecto.
-4. **Características**: Listado de las funcionalidades clave (puedes copiar la sección "Key Features").
-5. **Tecnologías Utilizadas**: Descripción breve de las herramientas y bibliotecas que usaste.
-6. **Cómo Funciona**: Detalle del flujo del proyecto (puedes usar la sección "How It Works").
-7. **Cómo Usar el Proyecto**: Instrucciones paso a paso para los usuarios.
-8. **Contribuciones (opcional)**: Información sobre cómo otros pueden contribuir.
-9. **Licencia (opcional)**: Tipo de licencia para el proyecto.
-
----
-
-### Ejemplo de README.md estructurado:
-
 ```markdown
 # 3D Visualization and Inverse Kinematics for a Robot Arm
 
