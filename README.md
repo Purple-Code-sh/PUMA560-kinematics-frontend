@@ -1,4 +1,4 @@
-```markdown
+
 # 3D Visualization and Inverse Kinematics for a Robot Arm
 
 This project is a web-based application that demonstrates the functionality of a robotic arm through 3D visualization. It allows users to input coordinates and configure the arm's movement. The app calculates the inverse kinematics of the robot, displays the computed angles, and visualizes the trajectory and joints in a 3D scene.
@@ -7,7 +7,7 @@ This project is a web-based application that demonstrates the functionality of a
 
 ## Features
 
-- Coordinate input with adjustable step sizes (\(0.01, 0.1, 1, 10, 50\)).
+- Coordinate input with adjustable step sizes (0.01, 0.1, 1, 10, 50).
 - Configuration options for the arm (right/left) and elbow (up/down).
 - Real-time WebSocket communication with the backend for kinematics calculation.
 - Interactive 3D visualization with dynamic joint and trajectory rendering.
@@ -34,7 +34,7 @@ This project is a web-based application that demonstrates the functionality of a
 ## How It Works
 
 1. **Input and Configuration**:
-   - Specify target coordinates (\(X, Y, Z\)) and select configuration options.
+   - Specify target coordinates (X, Y, Z) and select configuration options.
 2. **WebSocket Communication**:
    - Sends input data to the backend and receives joint angles and trajectory points.
 3. **3D Visualization**:
@@ -61,5 +61,3 @@ This project is a web-based application that demonstrates the functionality of a
 ## License
 
 This project is licensed under the MIT License. Feel free to use and modify it as needed.
-
-```
