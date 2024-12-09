@@ -64,4 +64,4 @@ This project is a web-based application that demonstrates the functionality of a
 
 ## License
 
-This project is licensed under the MIT License. Feel free to use and modify it as needed.
+This project is licensed under the Mozilla Public License Version 2.0
