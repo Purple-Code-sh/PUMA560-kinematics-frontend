@@ -8,19 +8,25 @@ interface AnglesResponse {
   theta1_deg: number;
   theta2_deg: number;
   theta3_deg: number;
+  coords_0_1: [number, number, number];
+  coords_0_2: [number, number, number];
+  coords_0_3: [number, number, number];
+  coords_0_4: [number, number, number];
   error?: string;
 }
 
 const WebSocketClient: React.FC = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [X, setX] = useState<string>("0.02");
-  const [Y, setY] = useState<string>("-0.15");
-  const [Z, setZ] = useState<string>("0.67");
-  const [config, setConfig] = useState<string>("lun");
+  const [X, setX] = useState<string>("-149.09");
+  const [Y, setY] = useState<string>("848.20");
+  const [Z, setZ] = useState<string>("20.23");
+  const [arm, setArm] = useState<number>(1); // +1 por defecto (brazo derecho)
+  const [elbow, setElbow] = useState<number>(1); // +1 por defecto (codo arriba)
 
   const [theta1, setTheta1] = useState<number | null>(null);
   const [theta2, setTheta2] = useState<number | null>(null);
   const [theta3, setTheta3] = useState<number | null>(null);
+  const [coords, setCoords] = useState<[number, number, number][]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -32,15 +38,26 @@ const WebSocketClient: React.FC = () => {
 
     ws.onmessage = (event) => {
       const data: Partial<AnglesResponse> = JSON.parse(event.data);
+
       if (data.error) {
         setError(data.error);
         setTheta1(null);
         setTheta2(null);
         setTheta3(null);
+        setCoords([]);
       } else if (data.theta1_deg !== undefined && data.theta2_deg !== undefined && data.theta3_deg !== undefined) {
         setTheta1(data.theta1_deg);
         setTheta2(data.theta2_deg);
         setTheta3(data.theta3_deg);
+
+        // Manejar coordenadas, asegurando que estén definidas
+        const newCoords: [number, number, number][] = [
+          data.coords_0_1 || [0, 0, 0],
+          data.coords_0_2 || [0, 0, 0],
+          data.coords_0_3 || [0, 0, 0],
+          data.coords_0_4 || [0, 0, 0],
+        ];
+        setCoords(newCoords);
         setError(null);
       }
     };
@@ -69,7 +86,8 @@ const WebSocketClient: React.FC = () => {
         X: parseFloat(X),
         Y: parseFloat(Y),
         Z: parseFloat(Z),
-        config: config
+        arm: arm,
+        elbow: elbow
       };
       socket.send(JSON.stringify(message));
     } else {
@@ -82,9 +100,9 @@ const WebSocketClient: React.FC = () => {
   const zNum = parseFloat(Z);
 
   // Rango e incrementos para etiquetas numéricas
-  const minVal = -1.0;
-  const maxVal = 1.0;
-  const step = 0.1;
+  const minVal = -950.0;
+  const maxVal = 950.0;
+  const step = 100;
 
   return (
     <div style={{ fontFamily: 'sans-serif' }}>
@@ -129,16 +147,28 @@ const WebSocketClient: React.FC = () => {
           </div>
           <div style={{ marginBottom: '10px' }}>
             <label>
-              Config:
-              <input
-                type="text"
-                value={config}
-                onChange={e => setConfig(e.target.value)}
-                style={{ marginLeft: '10px', width: '100px' }}
-              />
-              <span style={{ fontSize: '12px', marginLeft: '10px' }}>
-                (ej: 'lun', 'run', etc.)
-              </span>
+              Brazo:
+              <select
+                value={arm}
+                onChange={e => setArm(parseInt(e.target.value))}
+                style={{ marginLeft: '10px', width: '120px' }}
+              >
+                <option value={1}>Brazo derecho</option>
+                <option value={-1}>Brazo izquierdo</option>
+              </select>
+            </label>
+          </div>
+          <div style={{ marginBottom: '10px' }}>
+            <label>
+              Codo:
+              <select
+                value={elbow}
+                onChange={e => setElbow(parseInt(e.target.value))}
+                style={{ marginLeft: '10px', width: '120px' }}
+              >
+                <option value={1}>Codo arriba</option>
+                <option value={-1}>Codo abajo</option>
+              </select>
             </label>
           </div>
           <button onClick={sendMessage}>Calcular Inversa</button>
@@ -151,6 +181,13 @@ const WebSocketClient: React.FC = () => {
               <p>θ1: {theta1.toFixed(2)}°</p>
               <p>θ2: {theta2.toFixed(2)}°</p>
               <p>θ3: {theta3.toFixed(2)}°</p>
+
+              <h2>Coordenadas Calculadas:</h2>
+              {coords.map((coord, index) => (
+                <p key={index}>
+                  T0_{index + 1}: ({coord[0].toFixed(2)}, {coord[1].toFixed(2)}, {coord[2].toFixed(2)})
+                </p>
+              ))}
             </div>
           )}
         </div>
@@ -158,24 +195,24 @@ const WebSocketClient: React.FC = () => {
         {/* Sección 3D */}
         <div style={{ width: '50rem', height: '80vh', border: '1px solid #ccc' }}>
           <Canvas 
-            camera={{ position: [0.75, 0.75, 1.5], fov: 50 }}
+            camera={{ position: [1400, 1400, 1400], far:5000, near: 1,fov: 50 }}
             onCreated={({ camera }) => {
               // Mantener Z arriba
               camera.up.set(0, 0, 1);
             }}
           >
             <ambientLight intensity={0.8} />
-            <pointLight position={[2, 2, 2]} />
+            <pointLight position={[2000, 2000, 2000]} />
             <OrbitControls />
 
             {/* Etiquetas de ejes */}
-            <Text position={[1.1, 0, 0]} fontSize={0.05} color="red">X</Text>
-            <Text position={[0, 1.1, 0]} fontSize={0.05} color="green">Y</Text>
-            <Text position={[0, 0, 1.1]} fontSize={0.05} color="blue">Z</Text>
+            <Text position={[1000, 0, 0]} fontSize={50} color="red">X</Text>
+            <Text position={[0, 1000, 0]} fontSize={50} color="green">Y</Text>
+            <Text position={[0, 0, 1000]} fontSize={50} color="blue">Z</Text>
 
             {/* Punto en (X,Y,Z) */}
             <mesh position={[xNum, yNum, zNum]}>
-              <sphereGeometry args={[0.01, 16, 16]} />
+              <sphereGeometry args={[10, 16, 16]} />
               <meshStandardMaterial color="red" />
             </mesh>
 
@@ -195,7 +232,7 @@ const WebSocketClient: React.FC = () => {
                 <Text 
                   key={`x-label-${val}`} 
                   position={[val, 0, 0.01]} 
-                  fontSize={0.02} 
+                  fontSize={10} 
                   color="black"
                 >
                   {val.toFixed(2)}
@@ -210,7 +247,7 @@ const WebSocketClient: React.FC = () => {
                 <Text 
                   key={`y-label-${val}`} 
                   position={[0, val, 0.01]} 
-                  fontSize={0.02} 
+                  fontSize={10} 
                   color="black"
                 >
                   {val.toFixed(2)}
@@ -225,7 +262,7 @@ const WebSocketClient: React.FC = () => {
                 <Text 
                   key={`z-label-${val}`} 
                   position={[0, 0, val+0.01]} 
-                  fontSize={0.02} 
+                  fontSize={10} 
                   color="black"
                 >
                   {val.toFixed(2)}
