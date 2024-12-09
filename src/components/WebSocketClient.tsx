@@ -195,7 +195,7 @@ const WebSocketClient: React.FC = () => {
         {/* Sección 3D */}
         <div style={{ width: '50rem', height: '80vh', border: '1px solid #ccc' }}>
           <Canvas 
-            camera={{ position: [1400, 1400, 1400], far:5000, near: 1,fov: 50 }}
+            camera={{ position: [1100, 1100, 1700], far:5000, near: 1,fov: 50 }}
             onCreated={({ camera }) => {
               // Mantener Z arriba
               camera.up.set(0, 0, 1);
@@ -212,18 +212,18 @@ const WebSocketClient: React.FC = () => {
 
             {/* Punto en (X,Y,Z) */}
             <mesh position={[xNum, yNum, zNum]}>
-              <sphereGeometry args={[10, 16, 16]} />
+              <sphereGeometry args={[6, 16, 16]} />
               <meshStandardMaterial color="red" />
             </mesh>
 
             {/* Lineas para formar el "cuadro" en el plano XY y la línea vertical */}
-            <Line points={[[0,0,0],[xNum,0,0]]} color="#555" lineWidth={2} />
-            <Line points={[[xNum,0,0],[xNum,yNum,0]]} color="#555" lineWidth={2} />
-            <Line points={[[xNum,yNum,0],[0,yNum,0]]} color="#555" lineWidth={2} />
-            <Line points={[[0,yNum,0],[0,0,0]]} color="#555" lineWidth={2} />
+            <Line points={[[0,0,0],[xNum,0,0]]} color="#555" lineWidth={1} />
+            <Line points={[[xNum,0,0],[xNum,yNum,0]]} color="#555" lineWidth={1} />
+            <Line points={[[xNum,yNum,0],[0,yNum,0]]} color="#555" lineWidth={1} />
+            <Line points={[[0,yNum,0],[0,0,0]]} color="#555" lineWidth={1} />
 
             {/* Línea vertical desde la esquina del cuadro hasta el punto en Z */}
-            <Line points={[[xNum,yNum,0],[xNum,yNum,zNum]]} color="#555" lineWidth={2} />
+            <Line points={[[xNum,yNum,0],[xNum,yNum,zNum]]} color="#555" lineWidth={1} />
 
             {/* Etiquetas numéricas en X */}
             {Array.from({length: Math.floor((maxVal - minVal)/step)+1}, (_, idx) => {
@@ -269,6 +269,23 @@ const WebSocketClient: React.FC = () => {
                 </Text>
               );
             })}
+
+            {/* Puntos y líneas */}
+            {coords.length > 0 && (
+              <>
+                {coords.map((coord, index) => (
+                  <mesh key={`point-${index}`} position={coord}>
+                    <sphereGeometry args={[6, 16, 16]} />
+                    <meshStandardMaterial color="yellow" />
+                  </mesh>
+                ))}
+                <Line
+                  points={coords} // Lista de puntos
+                  color="blue"
+                  lineWidth={4}
+                />
+              </>
+            )}
 
           </Canvas>
         </div>
